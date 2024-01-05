@@ -1,4 +1,22 @@
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+
+const API_URL = "https://ih-countries-api.herokuapp.com/countries";
+
 function HomePage() {
+  const [countries, setCountries] = useState([]);
+  const getAllCountries = () => {
+    axios
+      .get(`${API_URL}`)
+      .then((response) => setCountries(response.data))
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    getAllCountries();
+  }, []);
+
   return (
     <div className="container" style={{ maxHeight: "90vh", overflow: scroll }}>
       <h1 style={{ fontSize: "24px" }}>
@@ -6,54 +24,21 @@ function HomePage() {
       </h1>
 
       <div className="list-group">
-        <a className="list-group-item list-group-item-action" href="/ABW">
-          🇦🇼 Aruba
-        </a>
-        <a className="list-group-item list-group-item-action" href="/AFG">
-          🇦🇫 Afghanistan
-        </a>
-        <a className="list-group-item list-group-item-action" href="/AGO">
-          🇦🇴 Angola
-        </a>
-        <a className="list-group-item list-group-item-action" href="/AIA">
-          🇦🇮 Anguilla
-        </a>
-        <a className="list-group-item list-group-item-action" href="/ALA">
-          🇦🇽 Åland Islands
-        </a>
-        <a className="list-group-item list-group-item-action" href="/ALB">
-          🇦🇱 Albania
-        </a>
-        <a className="list-group-item list-group-item-action" href="/AND">
-          🇦🇩 Andorra
-        </a>
-        <a className="list-group-item list-group-item-action" href="/ARE">
-          🇦🇪 United Arab Emirates
-        </a>
-        <a className="list-group-item list-group-item-action" href="/ARG">
-          🇦🇷 Argentina
-        </a>
-        <a className="list-group-item list-group-item-action" href="/ARM">
-          🇦🇲 Armenia
-        </a>
-        <a className="list-group-item list-group-item-action" href="/ASM">
-          🇦🇸 American Samoa
-        </a>
-        <a className="list-group-item list-group-item-action" href="/ATA">
-          🇦🇶 Antarctica
-        </a>
-        <a className="list-group-item list-group-item-action" href="/FLK">
-          🇫🇰 Falkland Islands
-        </a>
-        <a
-          className="list-group-item list-group-item-action active"
-          href="/FRA"
-        >
-          🇫🇷 France
-        </a>
-        <a className="list-group-item list-group-item-action" href="/ZWE">
-          🇿🇼 Zimbabwe
-        </a>
+        {countries.map((country) => {
+          return (
+            <Link
+              to={`/${country.alpha3Code}`}
+              className="list-group-item list-group-item-action"
+              key={country._id}
+            >
+              <img
+                src={`https://flagpedia.net/data/flags/icon/72x54/${country.alpha2Code.toLowerCase()}.png`}
+              />{" "}
+              <br />
+              {country.name.common}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
